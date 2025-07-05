@@ -4,222 +4,85 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Konfigurátor domu – Tvoje Hnízdo</title>
-  <meta name='robots' content='noindex'>
   <style>
-    :root {
-      --primary: #007bff;
-      --secondary: #f7f7f7;
-      --white: #ffffff;
-      --text-dark: #222;
-    }
-    body {
-      background: var(--secondary);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: var(--text-dark);
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: var(--white);
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    }
+    body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 20px; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
     .step { display: none; }
     .step.active { display: block; }
     .form-group { margin-bottom: 1.5rem; }
-    label { font-weight: bold; display: block; margin-bottom: .5rem; }
-    select, input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="range"] {
-      width: 100%; padding: 8px; font-size: 16px; margin-top: .3rem; border: 1px solid #ccc; border-radius: 6px;
-    }
-    button { padding: 10px 20px; font-size: 16px; margin: 10px 5px; border-radius: 5px; border: none; cursor: pointer; }
-    .next { background-color: var(--primary); color: var(--white); }
-    .next:hover { background-color: #0056b3; }
-    .back { background-color: #cccccc; }
-    #visualization img { max-width: 100%; margin-top: 20px; border-radius: 8px; }
-    #summary, #final-summary { font-weight: bold; margin-top: 20px; font-size: 1.2em; }
+    label { font-weight: bold; }
+    input, select { width: 100%; padding: 10px; margin-top: 5px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 10px; cursor: pointer; border: none; border-radius: 5px; }
+    .next { background-color: #007bff; color: #fff; }
+    .back { background-color: #ccc; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Konfigurátor domu – Tvoje Hnízdo</h1>
+    <h1>Konfigurátor – Tvoje Hnízdo</h1>
 
-    <!-- KROKY -->
-    <div id="step1" class="step active">
+    <div class="step active">
       <div class="form-group">
         <label for="disposition">Dispozice:</label>
         <select id="disposition">
-          <option value="1kk">1+kk</option>
           <option value="2kk">2+kk</option>
           <option value="3kk">3+kk</option>
-          <option value="4kk">4+kk</option>
-          <option value="5kk">5+kk</option>
-          <option value="6kk">6+kk</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="shape">Tvar domu:</label>
-        <select id="shape">
-          <option value="obdelnik">Obdélník</option>
-          <option value="ctverec">Čtverec</option>
-          <option value="l">L-tvar</option>
-          <option value="u">U-tvar</option>
-          <option value="t">T-tvar</option>
-          <option value="patrovy">Patrový</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="roof">Typ střechy:</label>
-        <select id="roof">
-          <option value="sedlova">Sedlová</option>
-          <option value="valbova">Valbová</option>
-          <option value="pultova">Pultová</option>
-          <option value="plochá">Plochá</option>
-          <option value="stanová">Stanová</option>
-          <option value="asymetrická">Asymetrická</option>
         </select>
       </div>
       <button class="next" onclick="nextStep()">Pokračovat</button>
     </div>
 
-    <div id="step2" class="step">
+    <div class="step">
       <div class="form-group">
-        <label for="area">Užitná plocha (20–300 m²):</label>
-        <input type="range" id="area" min="20" max="300" value="80">
-        <div>Plocha: <span id="area-value">80</span> m²</div>
+        <label for="area">Užitná plocha:</label>
+        <input type="number" id="area" value="80" />
       </div>
-      <div class="form-group">
-        <label for="delivery">Typ dodávky:</label>
-        <select id="delivery">
-          <option value="shell">Hrubá stavba</option>
-          <option value="partial">K dokončení</option>
-          <option value="turnkey">Na klíč</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="roofType">Typ střešní krytiny:</label>
-        <select id="roofType">
-          <option value="plech">Plech trapézový</option>
-          <option value="taska">Taška (+600 Kč/m²)</option>
-        </select>
-      </div>
-      <div id="visualization">
-        <img id="preview" src="https://dummyimage.com/240x400/cccccc/000000&text=Vizualizace" alt="Vizualizace">
-      </div>
-      <div id="summary">Cena: 0 Kč</div>
       <button class="back" onclick="prevStep()">Zpět</button>
       <button class="next" onclick="nextStep()">Pokračovat</button>
     </div>
 
-    <div id="step3" class="step">
-      <h2>Shrnutí</h2>
-      <div id="final-summary"></div>
-      <button class="back" onclick="prevStep()">Zpět</button>
-      <button class="next" onclick="nextStep()">Pokračovat</button>
-    </div>
-
-    <div id="step4" class="step">
-      <h2>Kontaktní údaje</h2>
-      <div class="form-group">
-        <label for="fullname">Jméno a příjmení:</label>
-        <input type="text" id="fullname" required>
-      </div>
+    <div class="step">
       <div class="form-group">
         <label for="email">E-mail:</label>
-        <input type="email" id="email" required>
-      </div>
-      <div class="form-group">
-        <label for="phone">Telefon:</label>
-        <input type="tel" id="phone" required>
+        <input type="email" id="email" />
       </div>
       <button class="back" onclick="prevStep()">Zpět</button>
-      <button class="next" onclick="submitForm()">Odeslat poptávku</button>
+      <button class="next" onclick="nextStep()">Pokračovat</button>
+    </div>
+
+    <div class="step">
+      <h2>Děkujeme za vyplnění!</h2>
+      <button class="back" onclick="prevStep()">Zpět</button>
     </div>
   </div>
 
   <script>
-    let step = 1;
-    const maxStep = 4;
-    const formData = {};
+    const steps = document.querySelectorAll('.step');
+    let currentStep = 0;
+
+    function showStep(index) {
+      steps.forEach((step, i) => {
+        step.classList.toggle('active', i === index);
+      });
+    }
 
     function nextStep() {
-      if (step < maxStep) step++;
-      updateSteps();
-      if (step === 3) fillSummary();
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        showStep(currentStep);
+      }
     }
 
     function prevStep() {
-      if (step > 1) step--;
-      updateSteps();
-    }
-
-    function updateSteps() {
-      for (let i = 1; i <= maxStep; i++) {
-        const s = document.getElementById('step' + i);
-        if (s) s.classList.remove('active');
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
       }
-      const active = document.getElementById('step' + step);
-      if (active) active.classList.add('active');
     }
 
-    const pricing = {
-      shell: 16500,
-      partial: 24500,
-      turnkey: 30500
-    };
-
-    const area = document.getElementById('area');
-    const areaValue = document.getElementById('area-value');
-    const delivery = document.getElementById('delivery');
-    const roofType = document.getElementById('roofType');
-    const priceDisplay = document.getElementById('summary');
-    const preview = document.getElementById('preview');
-
-    function updatePrice() {
-      const a = parseInt(area.value);
-      areaValue.textContent = a;
-      const base = pricing[delivery.value] * a;
-      const roof = roofType.value === 'taska' ? 600 * a : 0;
-      const total = base + roof;
-      priceDisplay.textContent = 'Cena: ' + total.toLocaleString('cs-CZ') + ' Kč';
-      const text = encodeURIComponent(`${a} m² | ${delivery.value} | ${roofType.value}`);
-      preview.src = `https://dummyimage.com/${a * 3}x400/cccccc/000000&text=${text}`;
-    }
-
-    area.addEventListener("input", updatePrice);
-    delivery.addEventListener("change", updatePrice);
-    roofType.addEventListener("change", updatePrice);
-    document.addEventListener("DOMContentLoaded", updatePrice);
-
-    function fillSummary() {
-      const dispo = document.getElementById("disposition").value;
-      const shape = document.getElementById("shape").value;
-      const roof = document.getElementById("roof").value;
-      const areaVal = area.value;
-      const deliv = delivery.value;
-      const roofKryt = roofType.value;
-      const base = pricing[deliv] * areaVal;
-      const extra = roofKryt === "taska" ? 600 * areaVal : 0;
-      const total = base + extra;
-
-      document.getElementById("final-summary").innerHTML = `
-        <p><strong>Dispozice:</strong> ${dispo}</p>
-        <p><strong>Tvar domu:</strong> ${shape}</p>
-        <p><strong>Typ střechy:</strong> ${roof}</p>
-        <p><strong>Užitná plocha:</strong> ${areaVal} m²</p>
-        <p><strong>Dodání:</strong> ${deliv}</p>
-        <p><strong>Střešní krytina:</strong> ${roofKryt}</p>
-        <p><strong>Celková cena:</strong> ${total.toLocaleString("cs-CZ")} Kč</p>
-      `;
-    }
-
-    function submitForm() {
-      formData.fullname = document.getElementById("fullname").value;
-      formData.email = document.getElementById("email").value;
-      formData.phone = document.getElementById("phone").value;
-      alert("Poptávka odeslána!\nDěkujeme, " + formData.fullname + ".");
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      showStep(currentStep);
+    });
   </script>
 </body>
 </html>
