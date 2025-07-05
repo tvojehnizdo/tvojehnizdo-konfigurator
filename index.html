@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Konfigurátor domu – Tvoje Hnízdo</title>
+  <style>
+    :root {
+      --primary: #007bff;
+      --secondary: #f7f7f7;
+    }
+    body { font-family: Arial, sans-serif; padding: 20px; background: var(--secondary); }
+    .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+    .step { display: none; }
+    .step.active { display: block; }
+    .form-group { margin-bottom: 1.5rem; }
+    label { font-weight: bold; display: block; margin-bottom: .5rem; }
+    select, input[type="number"], input[type="range"] {
+      width: 100%; padding: 8px; font-size: 16px; margin-top: .3rem;
+    }
+    button { padding: 10px 20px; font-size: 16px; margin: 10px 5px; border-radius: 5px; border: none; cursor: pointer; }
+    .next { background-color: var(--primary); color: white; border: none; }
+    .back { background-color: #ccc; }
+    #visualization img { max-width: 100%; margin-top: 20px; border-radius: 8px; }
+    #summary { font-weight: bold; margin-top: 20px; font-size: 1.2em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Konfigurátor domu – Tvoje Hnízdo</h1>
+
+    <!-- Krok 1 -->
+    <div class="step active" id="step1">
+      <div class="form-group">
+        <label for="disposition">Dispozice:</label>
+        <select id="disposition">
+          <option value="1kk">1+kk</option>
+          <option value="2kk">2+kk</option>
+          <option value="3kk">3+kk</option>
+          <option value="4kk">4+kk</option>
+          <option value="5kk">5+kk</option>
+          <option value="6kk">6+kk</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="shape">Tvar domu:</label>
+        <select id="shape">
+          <option value="obdelnik">Obdélník</option>
+          <option value="ctverec">Čtverec</option>
+          <option value="l">L-tvar</option>
+          <option value="u">U-tvar</option>
+          <option value="t">T-tvar</option>
+          <option value="patrovy">Patrový</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="roof">Typ střechy:</label>
+        <select id="roof">
+          <option value="sedlova">Sedlová</option>
+          <option value="valbova">Valbová</option>
+          <option value="pultova">Pultová</option>
+          <option value="plochá">Plochá</option>
+          <option value="stanová">Stanová</option>
+          <option value="asymetrická">Asymetrická</option>
+        </select>
+      </div>
+      <button class="next" onclick="nextStep()">Pokračovat</button>
+    </div>
+
+    <!-- Krok 2 -->
+    <div class="step" id="step2">
+      <div class="form-group">
+        <label for="area">Užitná plocha (20–300 m²):</label>
+        <input type="range" id="area" min="20" max="300" value="80">
+        <div>Plocha: <span id="area-value">80</span> m²</div>
+      </div>
+      <div class="form-group">
+        <label for="delivery">Typ dodávky:</label>
+        <select id="delivery">
+          <option value="shell">Hrubá stavba</option>
+          <option value="partial">K dokončení</option>
+          <option value="turnkey">Na klíč</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="roofType">Typ střešní krytiny:</label>
+        <select id="roofType">
+          <option value="plech">Plech trapézový</option>
+          <option value="taska">Taška (+600 Kč/m²)</option>
+        </select>
+      </div>
+      <div id="visualization">
+        <img id="preview" src="https://dummyimage.com/240x400/cccccc/000000&text=Vizualizace" alt="Vizualizace">
+      </div>
+      <div id="summary">Cena: 0 Kč</div>
+      <button class="back" onclick="prevStep()">Zpět</button>
+      <button class="next" onclick="nextStep()">Pokračovat</button>
+    </div>
+
+    <!-- Krok 3 - Shrnutí -->
+    <div class="step" id="step3">
+      <h2>Shrnutí</h2>
+      <div id="final-summary"></div>
+      <button class="back" onclick="prevStep()">Zpět</button>
+      <button class="next" onclick="alert('Poptávka odeslána!')">Odeslat poptávku</button>
+    
+    <!-- Krok 4 - Kontaktní údaje -->
+    <div class="step" id="step4">
+      <h2>Kontaktní údaje</h2>
+      <div class="form-group">
+        <label for="fullname">Jméno a příjmení:</label>
+        <input type="text" id="fullname" required>
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Telefon:</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <button class="back" onclick="prevStep()">Zpět</button>
+      <button class="next" onclick="submitForm()">Odeslat poptávku</button>
+    </div>
+  </div>
+
+  <script>
+  
+    let step = 1;
+const formData = {};
+    const steps = document.querySelectorAll('.step');
+
+    function nextStep() {
+  if (step < 4) {
+      if (step < steps.length) step++;
+      updateSteps();
+      if (step === 3) fillSummary(); if (step === 4) collectContacts();
+    }
+
+    function prevStep() {
+      if (step > 1) step--;
+      updateSteps();
+    }
+
+    function updateSteps() {
+      steps.forEach((s, i) => {
+        s.classList.toggle('active', i === step - 1);
+      });
+    }
+
+    // Cena výpočet
+    const pricing = {
+      shell: 16500,
+      partial: 24500,
+      turnkey: 30500
+    };
+
+    const area = document.getElementById('area');
+    const areaValue = document.getElementById('area-value');
+    const delivery = document.getElementById('delivery');
+    const roofType = document.getElementById('roofType');
+    const priceDisplay = document.getElementById('summary');
+    const preview = document.getElementById('preview');
+
+    function updatePrice() {
+      const a = parseInt(area.value);
+      areaValue.textContent = a;
+      const base = pricing[delivery.value] * a;
+      const roof = roofType.value === 'taska' ? 600 * a : 0;
+      const total = base + roof;
+      priceDisplay.textContent = 'Cena: ' + total.toLocaleString('cs-CZ') + ' Kč';
+      const text = encodeURIComponent(`${a} m² | ${delivery.value} | ${roofType.value}`);
+      preview.src = `https://dummyimage.com/${a * 3}x400/cccccc/000000&text=${text}`;
+    }
+
+    area.addEventListener("input", updatePrice);
+    delivery.addEventListener("change", updatePrice);
+    roofType.addEventListener("change", updatePrice);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updatePrice();
+    });
+
+    
+function collectContacts() {
+  formData.fullname = document.getElementById("fullname").value;
+  formData.email = document.getElementById("email").value;
+  formData.phone = document.getElementById("phone").value;
+}
+
+function submitForm() {
+  collectContacts();
+  alert("Poptávka odeslána!\nDěkujeme, " + formData.fullname + ".\nBrzy Vás budeme kontaktovat.");
+}
+function fillSummary() {
+
+      const dispo = document.getElementById("disposition").value;
+      const shape = document.getElementById("shape").value;
+      const roof = document.getElementById("roof").value;
+      const areaVal = area.value;
+      const deliv = delivery.value;
+      const roofKryt = roofType.value;
+      const base = pricing[deliv] * areaVal;
+      const extra = roofKryt === "taska" ? 600 * areaVal : 0;
+      const total = base + extra;
+
+      document.getElementById("final-summary").innerHTML = `
+        <p><strong>Dispozice:</strong> ${dispo}</p>
+        <p><strong>Tvar domu:</strong> ${shape}</p>
+        <p><strong>Typ střechy:</strong> ${roof}</p>
+        <p><strong>Užitná plocha:</strong> ${areaVal} m²</p>
+        <p><strong>Dodání:</strong> ${deliv}</p>
+        <p><strong>Střešní krytina:</strong> ${roofKryt}</p>
+        <p><strong>Celková cena:</strong> ${total.toLocaleString("cs-CZ")} Kč</p>
+      `;
+    }
+  </script>
+</body>
+</html>
