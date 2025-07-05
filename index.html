@@ -15,71 +15,140 @@
     button { padding: 10px 20px; font-size: 16px; margin-top: 10px; cursor: pointer; border: none; border-radius: 5px; }
     .next { background-color: #007bff; color: #fff; }
     .back { background-color: #ccc; }
+    #summary, #price { font-weight: bold; margin-top: 15px; }
+    img { max-width: 100%; margin-top: 15px; border-radius: 8px; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Konfigurátor – Tvoje Hnízdo</h1>
 
+    <!-- Krok 1: Dispozice -->
     <div class="step active">
       <div class="form-group">
         <label for="disposition">Dispozice:</label>
         <select id="disposition">
           <option value="2kk">2+kk</option>
           <option value="3kk">3+kk</option>
+          <option value="4kk">4+kk</option>
         </select>
       </div>
       <button class="next" onclick="nextStep()">Pokračovat</button>
     </div>
 
+    <!-- Krok 2: Plocha + dodávka -->
     <div class="step">
       <div class="form-group">
         <label for="area">Užitná plocha:</label>
-        <input type="number" id="area" value="80" />
+        <input type="number" id="area" value="80" min="20" max="300"/>
       </div>
+      <div class="form-group">
+        <label for="delivery">Typ dodávky:</label>
+        <select id="delivery">
+          <option value="shell">Hrubá stavba</option>
+          <option value="partial">K dokončení</option>
+          <option value="turnkey">Na klíč</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="roof">Střešní krytina:</label>
+        <select id="roof">
+          <option value="plech">Plech trapézový</option>
+          <option value="taska">Taška (+600 Kč/m²)</option>
+        </select>
+      </div>
+      <div id="price">Cena: 0 Kč</div>
+      <img id="preview" src="https://dummyimage.com/240x400/cccccc/000000&text=Vizualizace" alt="vizualizace" />
       <button class="back" onclick="prevStep()">Zpět</button>
       <button class="next" onclick="nextStep()">Pokračovat</button>
     </div>
 
+    <!-- Krok 3: Kontaktní údaje -->
     <div class="step">
+      <div class="form-group">
+        <label for="fullname">Jméno a příjmení:</label>
+        <input type="text" id="fullname" />
+      </div>
       <div class="form-group">
         <label for="email">E-mail:</label>
         <input type="email" id="email" />
       </div>
+      <div class="form-group">
+        <label for="phone">Telefon:</label>
+        <input type="tel" id="phone" />
+      </div>
       <button class="back" onclick="prevStep()">Zpět</button>
       <button class="next" onclick="nextStep()">Pokračovat</button>
     </div>
 
+    <!-- Krok 4: Shrnutí -->
     <div class="step">
-      <h2>Děkujeme za vyplnění!</h2>
+      <h2>Shrnutí poptávky</h2>
+      <div id="summary"></div>
       <button class="back" onclick="prevStep()">Zpět</button>
+      <button class="next" onclick="alert('Poptávka odeslána! Děkujeme.')">Odeslat</button>
     </div>
   </div>
 
   <script>
     const steps = document.querySelectorAll('.step');
     let currentStep = 0;
+    const pricing = { shell: 16500, partial: 24500, turnkey: 30500 };
+
+    const dispo = document.getElementById('disposition');
+    const area = document.getElementById('area');
+    const delivery = document.getElementById('delivery');
+    const roof = document.getElementById('roof');
+    const preview = document.getElementById('preview');
+    const priceDisplay = document.getElementById('price');
 
     function showStep(index) {
-      steps.forEach((step, i) => {
-        step.classList.toggle('active', i === index);
-      });
+      steps.forEach((step, i) => step.classList.toggle('active', i === index));
     }
 
     function nextStep() {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        showStep(currentStep);
-      }
+      if (currentStep < steps.length - 1) currentStep++;
+      showStep(currentStep);
+      if (currentStep === 1) updatePrice();
+      if (currentStep === 3) fillSummary();
     }
 
     function prevStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        showStep(currentStep);
-      }
+      if (currentStep > 0) currentStep--;
+      showStep(currentStep);
     }
 
+    function updatePrice() {
+      const m2 = parseInt(area.value);
+      const base = pricing[delivery.value] * m2;
+      const krytina = roof.value === 'taska' ? 600 * m2 : 0;
+      const total = base + krytina;
+      priceDisplay.textContent = 'Cena: ' + total.toLocaleString('cs-CZ') + ' Kč';
+      preview.src = 'https://dummyimage.com/' + (m2*3) + 'x400/cccccc/000000&text=' + m2 + 'm2';
+    }
+
+    function fillSummary() {
+      const jmeno = document.getElementById("fullname").value;
+      const email = document.getElementById("email").value;
+      const tel = document.getElementById("phone").value;
+      const m2 = area.value;
+      const base = pricing[delivery.value] * m2;
+      const krytina = roof.value === 'taska' ? 600 * m2 : 0;
+      const total = base + krytina;
+
+      document.getElementById("summary").innerHTML = `
+        <p><strong>Dispozice:</strong> ${dispo.value}</p>
+        <p><strong>Plocha:</strong> ${m2} m²</p>
+        <p><strong>Dodávka:</strong> ${delivery.value}</p>
+        <p><strong>Krytina:</strong> ${roof.value}</p>
+        <p><strong>Kontaktní osoba:</strong> ${jmeno}, ${email}, ${tel}</p>
+        <p><strong>Celková cena:</strong> ${total.toLocaleString('cs-CZ')} Kč</p>
+      `;
+    }
+
+    area.addEventListener("input", updatePrice);
+    delivery.addEventListener("change", updatePrice);
+    roof.addEventListener("change", updatePrice);
     document.addEventListener("DOMContentLoaded", () => {
       showStep(currentStep);
     });
