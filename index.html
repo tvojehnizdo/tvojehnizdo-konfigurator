@@ -5,6 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Konfigurátor domu – Tvoje Hnízdo</title>
   <style>
+    :root {
+      --primary: #007bff;
+      --secondary: #f7f7f7;
+      --white: #ffffff;
+      --text-dark: #222;
+    }
+    body {
+      background: var(--secondary);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-dark);
+    }
+    .container {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    button.next {
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+    }
+    button.next:hover {
+      background-color: #0056b3;
+    }
+    button.back {
+      background-color: #cccccc;
+    }
+    input, select {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    input[type=range] {
+      background-color: var(--primary);
+    }
+    
     body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
     .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
     .step { display: none; }
