@@ -160,7 +160,8 @@
   
     let step = 1;
 const formData = {};
-    const steps = document.querySelectorAll('.step');
+const maxStep = 4;
+    
 
     function nextStep() {
   if (step < 4) step++;
@@ -177,11 +178,16 @@ const formData = {};
       updateSteps();
     }
 
-    function updateSteps() {
-  steps.forEach((s, i) => {
-    s.classList.remove('active');
-  });
-  document.getElementById('step' + step).classList.add('active');
+    
+function updateSteps() {
+  for (let i = 1; i <= maxStep; i++) {
+    const s = document.getElementById('step' + i);
+    if (s) s.classList.remove('active');
+  }
+  const active = document.getElementById('step' + step);
+  if (active) active.classList.add('active');
+}
+
       steps.forEach((s, i) => {
         s.classList.toggle('active', i === step - 1);
       });
