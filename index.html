@@ -127,7 +127,10 @@ const formData = {};
     const steps = document.querySelectorAll('.step');
 
     function nextStep() {
-  if (step < 5) {
+  if (step < 4) step++;
+  updateSteps();
+  if (step === 3) fillSummary();
+  if (step === 4) collectContacts();
       if (step < steps.length) step++;
       updateSteps();
       if (step === 3) fillSummary(); if (step === 4) collectContacts();
@@ -139,6 +142,10 @@ const formData = {};
     }
 
     function updateSteps() {
+  steps.forEach((s, i) => {
+    s.classList.remove('active');
+  });
+  document.getElementById('step' + step).classList.add('active');
       steps.forEach((s, i) => {
         s.classList.toggle('active', i === step - 1);
       });
