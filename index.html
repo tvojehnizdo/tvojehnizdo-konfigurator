@@ -4,148 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Konfigurátor – Tvoje Hnízdo</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f9; padding: 30px; }
-    .container { max-width: 800px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-    .step { display: none; }
-    .step.active { display: block; }
-    .form-group { margin-bottom: 1.5rem; }
-    label { font-weight: bold; display: block; margin-bottom: 0.5rem; }
-    input, select { width: 100%; padding: 10px; font-size: 16px; }
-    button { padding: 10px 20px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; }
-    .next { background-color: #007bff; color: white; margin-top: 10px; }
-    .back { background-color: #ccc; margin-top: 10px; }
-  </style>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
-    <h1>Konfigurátor – Tvoje Hnízdo</h1>
-
-    <div class="step active">
-      <div class="form-group">
-        <label for="disposition">Dispozice:</label>
-        <select id="disposition">
-          <option value="1kk">1+kk</option>
-          <option value="2kk">2+kk</option>
-          <option value="3kk">3+kk</option>
-          <option value="4kk">4+kk</option>
-          <option value="5kk">5+kk</option>
-          <option value="6kk">6+kk</option>
-        </select>
-      </div>
-      <button class="next" onclick="nextStep()">Pokračovat</button>
+    <div id="step-1" class="step active">
+      <h2>Krok 1: Dispozice</h2>
+      <select id="dispozice">
+        <option value="1+kk">1+kk</option>
+        <option value="2+kk">2+kk</option>
+        <option value="3+kk">3+kk</option>
+        <option value="4+kk">4+kk</option>
+        <option value="5+kk">5+kk</option>
+        <option value="6+kk">6+kk</option>
+      </select>
+      <button onclick="nextStep()">Pokračovat</button>
     </div>
 
-    <div class="step">
-      <div class="form-group">
-        <label for="area">Užitná plocha (20–300 m²):</label>
-        <input type="range" id="area" min="20" max="300" value="80" oninput="updateAreaValue(this.value)">
-        <div id="areaValue">80 m²</div>
-      </div>
-      <div class="form-group">
-        <label for="delivery">Typ dodání:</label>
-        <select id="delivery">
-          <option value="shell">Hrubá stavba</option>
-          <option value="half">K dokončení</option>
-          <option value="turnkey">Na klíč</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="roofType">Střešní krytina:</label>
-        <select id="roofType">
-          <option value="plech">Plech trapézový</option>
-          <option value="taska">Taška (+600 Kč/m²)</option>
-        </select>
-      </div>
-      <button class="back" onclick="prevStep()">Zpět</button>
-      <button class="next" onclick="nextStep()">Pokračovat</button>
+    <div id="step-2" class="step">
+      <h2>Krok 2: Podlahová plocha</h2>
+      <input type="range" min="20" max="300" value="100" id="plocha" oninput="updatePlocha()"/>
+      <p id="plocha-label">100 m²</p>
+      <button onclick="prevStep()">Zpět</button>
+      <button onclick="nextStep()">Pokračovat</button>
     </div>
 
-    <div class="step">
-      <div class="form-group">
-        <label for="shape">Tvar domu:</label>
-        <select id="shape">
-          <option value="obdelnik">Obdélník</option>
-          <option value="ctverec">Čtverec</option>
-          <option value="l">L</option>
-          <option value="t">T</option>
-          <option value="u">U</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="roof">Typ střechy:</label>
-        <select id="roof">
-          <option value="sedlova">Sedlová</option>
-          <option value="valbova">Valbová</option>
-          <option value="plochá">Plochá</option>
-        </select>
-      </div>
-      <button class="back" onclick="prevStep()">Zpět</button>
-      <button class="next" onclick="nextStep()">Pokračovat</button>
+    <div id="step-3" class="step">
+      <h2>Krok 3: Typ dodání</h2>
+      <select id="dodani">
+        <option value="hruba">Hrubá stavba (16 500 Kč/m²)</option>
+        <option value="dokonceni">K dokončení (24 500 Kč/m²)</option>
+        <option value="naklic">Na klíč (30 500 Kč/m²)</option>
+      </select>
+      <button onclick="prevStep()">Zpět</button>
+      <button onclick="nextStep()">Pokračovat</button>
     </div>
 
-    <div class="step">
-      <div class="form-group">
-        <label for="email">E-mail:</label>
-        <input type="email" id="email" placeholder="např. jan@email.cz" required>
-      </div>
-      <button class="back" onclick="prevStep()">Zpět</button>
-      <button class="next" onclick="nextStep()">Zobrazit souhrn</button>
+    <div id="step-4" class="step">
+      <h2>Krok 4: Typ střechy</h2>
+      <select id="strecha">
+        <option value="sedlova">Sedlová</option>
+        <option value="valbova">Valbová</option>
+        <option value="pultova">Pultová</option>
+        <option value="plochá">Plochá</option>
+      </select>
+      <button onclick="prevStep()">Zpět</button>
+      <button onclick="nextStep()">Pokračovat</button>
     </div>
 
-    <div class="step">
-      <h2>Souhrn poptávky:</h2>
-      <p><strong>Dispozice:</strong> <span id="sumDisposition"></span></p>
-      <p><strong>Plocha:</strong> <span id="sumArea"></span></p>
-      <p><strong>Dodání:</strong> <span id="sumDelivery"></span></p>
-      <p><strong>Krytina:</strong> <span id="sumRoofType"></span></p>
-      <p><strong>Tvar domu:</strong> <span id="sumShape"></span></p>
-      <p><strong>Střecha:</strong> <span id="sumRoof"></span></p>
-      <p><strong>Cena celkem:</strong> <span id="sumPrice"></span></p>
-      <button class="back" onclick="prevStep()">Zpět</button>
+    <div id="step-5" class="step">
+      <h2>Krok 5: Krytina střechy</h2>
+      <select id="krytina">
+        <option value="plech">Plech</option>
+        <option value="taska">Taška (+600 Kč/m²)</option>
+      </select>
+      <button onclick="prevStep()">Zpět</button>
+      <button onclick="nextStep()">Pokračovat</button>
+    </div>
+
+    <div id="step-6" class="step">
+      <h2>Krok 6: Shrnutí a cena</h2>
+      <p id="summary"></p>
+      <button onclick="prevStep()">Zpět</button>
     </div>
   </div>
 
-  <script>
-    const steps = document.querySelectorAll('.step');
-    let currentStep = 0;
-    let m2Price = { shell: 16500, half: 24500, turnkey: 30500 };
-
-    function showStep(i) {
-      steps.forEach((s, index) => s.classList.toggle('active', index === i));
-    }
-    function nextStep() {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        showStep(currentStep);
-        if (currentStep === steps.length - 1) calculateSummary();
-      }
-    }
-    function prevStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        showStep(currentStep);
-      }
-    }
-    function updateAreaValue(val) {
-      document.getElementById('areaValue').textContent = `${val} m²`;
-    }
-    function calculateSummary() {
-      const d = document.getElementById;
-      const area = parseInt(d('area').value);
-      const roof = d('roofType').value;
-      const basePrice = m2Price[d('delivery').value];
-      const extra = roof === 'taska' ? 600 : 0;
-      const total = (basePrice + extra) * area;
-      d('sumDisposition').textContent = d('disposition').value;
-      d('sumArea').textContent = `${area} m²`;
-      d('sumDelivery').textContent = d('delivery').options[d('delivery').selectedIndex].text;
-      d('sumRoofType').textContent = d('roofType').options[d('roofType').selectedIndex].text;
-      d('sumShape').textContent = d('shape').value;
-      d('sumRoof').textContent = d('roof').value;
-      d('sumPrice').textContent = total.toLocaleString('cs-CZ') + ' Kč';
-    }
-    document.addEventListener('DOMContentLoaded', () => showStep(currentStep));
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
